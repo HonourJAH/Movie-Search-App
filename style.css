@@ -32,6 +32,22 @@ input {
   background: #1e293b;
   padding: 10px;
   border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.movie:hover {
+  transform: scale(1.05);
+}
+
+.movie a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.movie a:visited {
+  color: inherit;
 }
 
 .movie img {

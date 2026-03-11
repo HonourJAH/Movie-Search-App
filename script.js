@@ -11,6 +11,8 @@ async function searchMovies(query) {
     return;
   }
 
+  moviesContainer.innerHTML = "<p>Loading...</p>";
+
   const url = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`;
 
   try {
@@ -26,9 +28,29 @@ async function searchMovies(query) {
 
     renderMovies(data.Search);
   } catch (err) {
-    moviesContainer.innerHTML = "Error fetching movies";
+    moviesContainer.innerHTML = "<p>Error fetching movies</p>";
   }
 }
+
+// moviesContainer.addEventListener("click", async function (e) {
+//   const movieCard = e.target.closest(".movie");
+
+//   if (!movieCard) return;
+
+//   const imdbID = movieCard.dataset.id;
+
+//   try {
+//     const res = await fetch(
+//       `https://www.omdbapi.com/?apikey=${API_KEY}&i=${imdbID}`
+//     );
+
+//     const data = await res.json();
+
+//     console.log("Movie details:", data);
+//   } catch (err) {
+//     console.error("Error fetching movie details");
+//   }
+// });
 
 function renderMovies(movies) {
   moviesContainer.innerHTML = "";
@@ -37,10 +59,19 @@ function renderMovies(movies) {
     const movieCard = document.createElement("div");
     movieCard.classList.add("movie");
 
+    movieCard.dataset.id = movie.imdbID;
+
+    const poster =
+      movie.Poster !== "N/A"
+        ? movie.Poster
+        : "https://via.placeholder.com/300x450?text=No+Image";
+
     movieCard.innerHTML = `
-      <img src="${movie.Poster !== "N/A" ? movie.Poster : ""}" />
-      <h3>${movie.Title}</h3>
-      <p>Year: ${movie.Year}</p>
+      <a href="https://www.imdb.com/title/${movie.imdbID}/" target="_blank">
+        <img src="${poster}" alt="${movie.Title}">
+        <h3>Title: ${movie.Title}</h3>
+        <p>Year: ${movie.Year}</p>
+      </a>
     `;
 
     moviesContainer.appendChild(movieCard);
@@ -59,7 +90,7 @@ function debounce(func, delay = 500) {
   };
 }
 
-const debouncedSearch = debounce(searchMovies, 1000);
+const debouncedSearch = debounce(searchMovies, 500);
 
 searchInput.addEventListener("input", (e) => {
   console.log(e.target.value);
